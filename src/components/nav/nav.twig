@@ -1,10 +1,20 @@
 <nav class="nav">
     <h2 class="nav-title">Общий nav(меню)</h2>
     <p class="nav-text">Файл <b>components/nav.twig</b> импортровали в общий каркас сайта <b>layouts/base.twig</b></p>
+<h3>Пример Twig (for / if)</h3>
+
+{% set menu_items = ["Главная", "Страница 1", "Главная", "Страница 1"] %} {# Пeременная списка #}
+
+
     <ul class="nav-menu">
-        <li class="nav-menu_item"><a href="./index.html">Главная</a></li>
-        <li class="nav-menu_item"><a href="./page1.html">Страница 1</a></li>
-        <li class="nav-menu_item"><a href="./index.html">Главная</a></li>
-        <li class="nav-menu_item"><a href="./page1.html">Страница 1</a></li>
+        {% for item in menu_items %} {# Перебор по значениям списка #}
+            
+            {% if loop.index0 % 2 == 0 %} {# loop.index0 - индекс #}
+                <li class="nav-menu_item"><a href="./index.html">{{item}}</a></li>
+            {% else %}
+                <li class="nav-menu_item"><a href="./page1.html">{{item}}</a></li>
+            {% endif %}
+  
+        {% endfor %}
     </ul>
 </nav>
