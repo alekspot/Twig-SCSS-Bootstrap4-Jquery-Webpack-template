@@ -3,74 +3,40 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {ProvidePlugin} = require('webpack');
 const SvgSpritePlugin = require('svg-sprite-loader/plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const { getEntryJs, generateHtmlPlugins } = require('./utils');
 
 module.exports = {
-//  1) Входные файлы для страниц.В них можно закидывать стили(css,scss), пути к картинкам и шрифтам, другой js код, библиотеки установленные в проекте
-//  Их сейчас 2, для каждой страницы html
-    entry: {
-        main: './src/js/index.js',
-        second: './src/js/page1.js'
-    },
-//  2)Указываем относительно какой папки будет искаться стартовая страница index.html в браузере при dev режиме...также это папка создается в production режиме и в ней лежит все готовое, заебатое...
-    // Когда мы запускаем команду npm run dev, открывается страница в браузере http://localhost:9005/index.html, в нашем случае
-    // index.html будет искаться в папке build(которая в dev виртуальная и мы ее не видим, а в production создается)
+  
+    entry: getEntryJs('src/js'),
+//  Указываем относительно какой папки будут выполняться импорты файлов index.html при dev режиме
     output: {
-        path: path.resolve(__dirname, 'build'), // указываем папку(она автоматически создается в production, и виртуально в dev режиме)
+        path: path.resolve(__dirname, 'build'), // создается в production, и подразумевается в dev режиме
         publicPath: '/',    // относительный путь от папки build
-        filename: 'main.js' // сжатый в main.js входной файл index.js в который мы закидывали все что можно из пункта 1) будет содержать преобразованный, оптимизированный код 
     },
-    
-
-//  3) Указываем webpack как обрабатывать все что мы закидывали в index.js (стили css,scss, пути к картинкам и шрифтам, другой js код) в пункте 1)...чтобы он понимал что здесь происходит
     module: { 
         rules: [
-            {   
-                test: /\.(html)$/,  // расширения файлов
-                use: ['html-loader'] // плагин для обработки...их нужно устанавливать,т.е: npm i html-loader --save-dev
-            },
+            { test: /\.(html)$/, use: ['html-loader'] },
+            { test: /\.(png|jpg|gif)$/i, use: ['file-loader'] }, 
+            { test: /\.svg$/, use: ['svg-sprite-loader', 'svgo-loader'] },
             {
-                test: /\.twig$/,    // шаблонизатор html для деления html на кусочки(компоненты)...например отдельно header, footer
+                test: /\.twig$/,
                 use: [
-                    'raw-loader', // плагин для обработки
+                    'raw-loader',
                     {
-                        loader: 'twig-html-loader', // плагин для обработки
+                        loader: 'twig-html-loader',
                         options: {
                             namespaces: {
-                                'layouts': 'src/layouts', // указываем в какой папке искать базовые файлы c html разметкой(т.е где они повторяются)
-                                'components': 'src/components', //папка для отдельных кусочков html(компоненты)
+                                'layouts': 'src/layouts', // {% extends "layouts::base.twig" %}
+                                'components': 'src/components', // {%  include '@components/content/content_index.twig' %} 
                             }
                         }
                     }
                 ],
-            },
-            {
-                test: /\.(png|jpg|gif)$/i,
-                use: [
-                    {
-                        loader: "file-loader",
-                    }
-                ],
-            },
-            {
-                test: /\.svg$/,
-                use: [{
-                    loader: "svg-sprite-loader",
-                    options: {
-                        spriteFilename: "assets/sprite.[hash:6].svg",
-                        esModule: false,
-                        extract: false
-                    }
-                }, {
-                    loader: "svgo-loader"
-                }]
             }
         ]
     },
     resolve: {
-        extensions: ['*', '.js'],
-        // Для сокращения написания путей к файлам, 
-        // чтобы не писать import '../../../../../assets/image.cat',а
-        // писать import 'assets/image.cat'
+        //  import '../../../../../assets/image.cat' | import 'assets/image.cat'
         alias: {
             'assets': path.resolve('./src/assets'),
             'components': path.resolve('./src/components'),
@@ -78,17 +44,8 @@ module.exports = {
         }
     },   
     plugins: [
-        new HtmlWebpackPlugin({ ///указываем пути к входным файлам html(twig)
-            chunks: ['main'],
-            template: 'src/pages/index.twig',
-            filename: 'index.html',
-        }),
-        new HtmlWebpackPlugin({ ///указываем пути к входным файлам html(twig)
-            chunks: ['second'],
-            template: 'src/pages/page1.twig',
-            filename: 'page1.html'
-        }),
-        new ProvidePlugin({ //подключает jquery без импорта в главном файле index.js
+        ...generateHtmlPlugins('src/views', HtmlWebpackPlugin),
+        new ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
             "window.jQuery": "jquery",

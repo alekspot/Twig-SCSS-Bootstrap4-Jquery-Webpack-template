@@ -1,12 +1,8 @@
-{# Базовый шаблон страницы. Общий каркас для всех страниц сайта,
-В нем мы пишем слоты(метки) куда будет подставляться html разметка #}
-
 <!DOCTYPE html>
 <html lang="ru">
     <head>
         {# Создаем слот для title, в это место будет подставляться разметка или текст #}
         <title>{% block title %}{% endblock %}</title>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
