@@ -13,4 +13,23 @@
 //какие-то общие стили
 @import './scss/common';
 
+.test {
+    background: #000;
+}
+
+#btn {
+   position: relative;
+   left: 0;
+   transition: all 1s;
+
+   &.active {
+     left: 50%;
+   }
+}
+.empty {
+    margin-top: 20px;
+    width: 150px;
+    height: 150px;
+    background: red;
+}
 
