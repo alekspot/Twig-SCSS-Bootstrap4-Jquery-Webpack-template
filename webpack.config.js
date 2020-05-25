@@ -1,7 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {ProvidePlugin} = require('webpack');
-const SvgSpritePlugin = require('svg-sprite-loader/plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const { getEntryJs, generateHtmlPlugins } = require('./utils');
 
@@ -45,14 +44,12 @@ module.exports = {
     },   
     plugins: [
         ...generateHtmlPlugins('src/views', HtmlWebpackPlugin),
-        new ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery",
-            "window.jQuery": "jquery",
-        }),
-        new SvgSpritePlugin({
-            plainSprite: false
-        }),
+        // new ProvidePlugin({
+        //     $: "jquery",
+        //     jQuery: "jquery",
+        //     "window.jQuery": "jquery",
+        // }),
+
         // указывать везде пути до картинки через папку images
         // <img src="images/cat.png" alt="">, и НЕ ИСПОЛЬЗОВАТЬ относительные пути типа
         // <img src="../../assets/images/cat.png"

@@ -6,25 +6,12 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
     </head>
 
     <body>
-        {# Импортируем общие компоненты header и nav...на всех страницах одинаковые #}
-        {%  include "@components/header/header.twig" %}
-        {%  include "@components/nav/nav.twig" %}
-
-
-        <div class="title title--centred">
-            <h2>Разный content(содержание)</h2>
-            <p>Ниже идет слот content, который разный на всех страницах</p>
-        </div>
-        
-        {# Создаем слот для content(контента), 
+        {# Создаем слот body для content(контента), 
         в это место будет подставляться разметка или текст, у каждой страницы свой контент и он будет отличаться #}
-        {% block content %}{% endblock %}
+        {% block body %}{% endblock %}
 
-        {# Импортируем общий footer #}
-        {%  include "@components/footer/footer.twig" %}
     </body>
 </html>
